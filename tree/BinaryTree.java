@@ -3,6 +3,10 @@
  */
 package com.dataStructures.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Stack;
 
 /**
  * @author JasonChan
@@ -10,7 +14,7 @@ package com.dataStructures.tree;
  */
 public class BinaryTree <T extends Comparable<? super T>>{
 
-	private TreeNode<T> firstNode;
+	public TreeNode<T> firstNode;
 	
 	public BinaryTree(T element){
 		firstNode = new TreeNode<T>(element);
@@ -19,15 +23,57 @@ public class BinaryTree <T extends Comparable<? super T>>{
 	public BinaryTree(){
 		this(null);
 	}
-	
-	public TreeNode<T> getFirstNode(){
-		return firstNode;
-	}
+
 	
 	public void makeEmpty(){
 		firstNode.setElement(null);
 		firstNode.setLeft(null);
 		firstNode.setRight(null);
+	}
+	
+	public void printStructure(){
+		printStructure(firstNode);
+	}
+	private void printStructure(TreeNode<T> tree){
+		if(tree == null)
+			return;
+		ArrayList<TreeNode<T>[]> items = new ArrayList<>();
+		items.add(new TreeNode[]{tree});
+		int height = getTreeHeight(firstNode);
+		int level = 1;
+		while(level <= height){
+			TreeNode<T>[] row = new TreeNode[(int) Math.pow(2, level)];
+			for(int i=0; i<items.get(level-1).length; i++){
+				if(items.get(level-1)[i] != null){
+					row[2*i] = items.get(level-1)[i].getLeft();
+					row[2*i+1] = items.get(level-1)[i].getRight();
+				}
+			}
+			items.add(row);
+			level++;
+		}
+		for(int i=0; i<items.size(); i++){
+			for(int j=0; j<Math.pow(2, height); j++)
+				System.out.print(" ");
+			for(int k=0; k<items.get(i).length; k++){
+				if(items.get(i)[k] != null){
+					System.out.print(items.get(i)[k].getElement());
+				}else{
+					System.out.print("*");
+				}
+				for(int j=0; j<2*Math.pow(2, height)-1; j++)
+					System.out.print(" ");
+			}
+			System.out.println("");
+			height--;
+		}
+		
+	}
+	public int getTreeHeight(TreeNode<T> node){
+		if(node == null)
+			return -1;
+		int height = 0;
+		return height+=Math.max(getTreeHeight(node.getLeft()), getTreeHeight(node.getRight()))+1;
 	}
 	
 	public void printElement(){
